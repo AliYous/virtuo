@@ -157,19 +157,22 @@ const actors = [{
   }]
 }];
 
-console.log(cars);
-console.log(rentals);
-console.log(actors);
+// -------------  My functions -----------------------
 
+function updateRentalPrice(rentals){
+  rentals.forEach(rental => {
+    const car = cars.find(car => car.id === rental.carId)
+    let pickupDate = new Date(rental.pickupDate)
+    let returnDate = new Date(rental.returnDate)
+    let nbDays = (returnDate.getTime() - pickupDate.getTime()) / 86400000 //We divide by the nb of millisec in a day because getTime() returns miliseconds
+    let distanceComp = car.pricePerKm * rental.distance
+    let timeComp = car.pricePerDay * nbDays
+    let rentalPrice = distanceComp + timeComp 
 
-function rentalPrice(rental, car){
-  let pickupDate = new Date(rental.pickupDate)
-  let returnDate = new Date(rental.returnDate)
-  let nbDays = (returnDate.getTime() - pickupDate.getTime()) / 86400000 //We divide by the nb of millisec in a day because getTime() returns miliseconds
-  let distanceComp = car.pricePerKm * rental.distance
-  let timeComp = car.pricePerDay * nbDays
-  let rentalPrice = distanceComp + timeComp 
-
-  return rentalPrice
+    rental.price = rentalPrice
+    
+  });
 }
-console.log("rental price is : " + rentalPrice(rentals[1], cars[1]))
+
+updateRentalPrice(rentals)
+console.log(rentals)
