@@ -160,3 +160,16 @@ const actors = [{
 console.log(cars);
 console.log(rentals);
 console.log(actors);
+
+
+function rentalPrice(rental, car){
+  let pickupDate = new Date(rental.pickupDate)
+  let returnDate = new Date(rental.returnDate)
+  let nbDays = (returnDate.getTime() - pickupDate.getTime()) / 86400000 //We divide by the nb of millisec in a day because getTime() returns miliseconds
+  let distanceComp = car.pricePerKm * rental.distance
+  let timeComp = car.pricePerDay * nbDays
+  let rentalPrice = distanceComp + timeComp 
+
+  return rentalPrice
+}
+console.log("rental price is : " + rentalPrice(rentals[1], cars[1]))
