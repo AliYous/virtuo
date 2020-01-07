@@ -158,7 +158,7 @@ const actors = [{
 }];
 
 // -------------  My functions -----------------------
-
+//Updates rental price for each rentals
 function updateRentalPrice(rentals){
   rentals.forEach(rental => {
     const car = cars.find(car => car.id === rental.carId)
