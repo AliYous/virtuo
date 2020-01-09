@@ -181,6 +181,7 @@ rentals.forEach(rental => {
 });
 
 console.log("EuroKilometers : ")
+console.log("I'm not sure why but the price that is displayed here already takes into consideration the DriveMorePayLess func, even though it hasn't ran yet.")
 console.log(rentals)
 
 
@@ -212,3 +213,99 @@ rentals.forEach(rental => {
 
 console.log("DriveMorePayLess : ")
 console.log(rentals)
+
+
+// -------------   Step 3 - Give me all your money  -----------------------
+
+function giveMeAllYourMoney(rental) {
+  let pickupDate = new Date(rental.pickupDate)
+  let returnDate = new Date(rental.returnDate)
+  let nbDays = (returnDate.getTime() - pickupDate.getTime()) / 86400000
+
+  const rentalPrice = rental.price
+  const totalCommission = rentalPrice * 0.30 //Total com is 30% of rental price
+  let insuranceCommission = totalCommission / 2 //Insurance takes half of the total commission
+  let treasuryCommission = nbDays //treasury takes 1€ per day
+  let virtuoCommission = totalCommission - treasuryCommission - insuranceCommission
+
+  rental.commission.insurance = insuranceCommission
+  rental.commission.treasury = treasuryCommission
+  rental.commission.virtuo = virtuoCommission
+}
+
+
+rentals.forEach(rental => {
+  giveMeAllYourMoney(rental)
+});
+
+console.log("GiveMeAllYourMoney : ")
+console.log(rentals)
+
+
+// -------------   Step 4 - The Famous Deductible  -----------------------
+
+function theFamousDeductible(rental){
+  let pickupDate = new Date(rental.pickupDate)
+  let returnDate = new Date(rental.returnDate)
+  let nbDays = (returnDate.getTime() - pickupDate.getTime()) / 86400000
+
+  let rentalPrice = rental.price
+
+  if(rental.deductibleReduction){
+    rentalPrice += 4 * nbDays //deductible reduction costs 4€ per day of rent
+  }
+
+  rental.price = rentalPrice
+}
+
+rentals.forEach(rental => {
+  theFamousDeductible(rental)
+});
+
+console.log("theFamousDeductible : ")
+console.log(rentals)
+
+
+// -------------  Step 5 - Pay the actors  -----------------------
+
+function payTheActors(actor)
+{
+  const rental = rentals.find(rental => rental.id === actor.rentalId)
+
+
+  let pickupDate = new Date(rental.pickupDate)
+  let returnDate = new Date(rental.returnDate)
+  let nbDays = (returnDate.getTime() - pickupDate.getTime()) / 86400000
+
+  let rentalPrice = rental.price
+  let driverDebit = rentalPrice 
+  let totalCommission = rentalPrice*0.30
+  let deductibleCost = 0
+  let partnerCredit = 0
+  let virtuoCredit = 0
+  let treasuryCredit = 0
+  let insuranceCredit = 0
+
+  if(rental.deductibleReduction){
+    deductibleCost = 4 * nbDays
+    driverDebit += deductibleCost //If he subscribed to the deductible reduction
+  }
+
+  partnerCredit = rentalPrice - totalCommission //Rental price minus the commission
+  insuranceCredit = totalCommission/2
+  treasuryCredit = nbDays
+  virtuoCredit = deductibleCost + totalCommission - insuranceCredit - treasuryCredit
+
+  actor.payment[0].amount = driverDebit
+  actor.payment[1].amount = partnerCredit
+  actor.payment[2].amount = insuranceCredit
+  actor.payment[3].amount = treasuryCredit
+  actor.payment[4].amount = virtuoCredit
+}
+
+actors.forEach(actor => {
+  payTheActors(actor)
+});
+
+console.log("PayTheActors : ")
+console.log(actors)
