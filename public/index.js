@@ -158,9 +158,12 @@ const actors = [{
   }]
 }];
 
-// -------------  My functions -----------------------
+
+
+// -------------   Step 1 - Euro-Kilometers  -----------------------
+
 //Updates rental price for a particular rental passed as parameter
-function updateRentalPrice(rental){
+function euroKilometers(rental){
     const car = cars.find(car => car.id === rental.carId)
     let pickupDate = new Date(rental.pickupDate)
     let returnDate = new Date(rental.returnDate)
@@ -174,7 +177,38 @@ function updateRentalPrice(rental){
 
 
 rentals.forEach(rental => {
-  updateRentalPrice(rental)
+  euroKilometers(rental)
 });
 
+console.log("EuroKilometers : ")
+console.log(rentals)
+
+
+// -------------   Step 2 - Drive more, pay less  -----------------------
+
+function driveMorePayLess(rental){
+  const car = cars.find(car => car.id === rental.carId)
+  let pickupDate = new Date(rental.pickupDate)
+  let returnDate = new Date(rental.returnDate)
+  let nbDays = (returnDate.getTime() - pickupDate.getTime()) / 86400000 //We divide by the nb of millisec in a day because getTime() returns miliseconds
+  let distanceComp = car.pricePerKm * rental.distance
+  let timeComp = car.pricePerDay * nbDays
+  let rentalPrice = distanceComp + timeComp 
+
+  if(nbDays > 1) {
+    rentalPrice = rentalPrice - rentalPrice*0.10  //If rental is more than 1 day we apply a 10% coupon to the price
+  } else if(nbDays > 4) {
+    rentalPrice = rentalPrice - rentalPrice*0.30  //If rental is more than 4 days we apply a 30% coupon to the price 
+  } else if(nbDays > 10) {
+    rentalPrice = rentalPrice - rentalPrice*0.50  //If rental is more than 10 days we apply a 50% coupon to the price
+  }
+
+  rental.price = rentalPrice
+}
+
+rentals.forEach(rental => {
+  driveMorePayLess(rental)
+});
+
+console.log("DriveMorePayLess : ")
 console.log(rentals)
