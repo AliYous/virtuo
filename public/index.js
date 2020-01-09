@@ -73,6 +73,7 @@ const rentals = [{
   'carId': '4afcc3a2-bbf4-44e8-b739-0179a6cd8b7d',
   'pickupDate': '2019-12-01',
   'returnDate': '2019-12-15',
+  'distance' : 1000,
   'options': {
     'deductibleReduction': true
   },
@@ -158,9 +159,8 @@ const actors = [{
 }];
 
 // -------------  My functions -----------------------
-//Updates rental price for each rentals
-function updateRentalPrice(rentals){
-  rentals.forEach(rental => {
+//Updates rental price for a particular rental passed as parameter
+function updateRentalPrice(rental){
     const car = cars.find(car => car.id === rental.carId)
     let pickupDate = new Date(rental.pickupDate)
     let returnDate = new Date(rental.returnDate)
@@ -170,9 +170,11 @@ function updateRentalPrice(rentals){
     let rentalPrice = distanceComp + timeComp 
 
     rental.price = rentalPrice
-    
-  });
 }
 
-updateRentalPrice(rentals)
+
+rentals.forEach(rental => {
+  updateRentalPrice(rental)
+});
+
 console.log(rentals)
